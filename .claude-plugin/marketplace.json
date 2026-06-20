@@ -1,0 +1,18 @@
+{
+  "name": "cloudgate-local",
+  "owner": {
+    "name": "Cloudgate Dev LLC",
+    "email": "dev@cloudgate.dev"
+  },
+  "metadata": {
+    "description": "Cloudgate Builder (Local) — local development build pointing at a localhost Cloudgate server.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "cloudgate-builder-local",
+      "source": "./plugins/cloudgate-builder-local",
+      "description": "Build and manage Cloudgate workflow-APIs against a locally running dev server (localhost:44301) from Claude."
+    }
+  ]
+}

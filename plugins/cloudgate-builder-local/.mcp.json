@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "cloudgate-local": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "http://localhost:44301/mcp/workflow",
+        "33418",
+        "--static-oauth-client-info",
+        "{\"client_id\":\"cloudgate-mcp\"}"
+      ]
+    }
+  }
+}

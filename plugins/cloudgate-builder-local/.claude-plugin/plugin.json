@@ -1,0 +1,10 @@
+{
+  "name": "cloudgate-builder-local",
+  "version": "1.0.0",
+  "description": "Cloudgate Builder (Local) — connects Claude to a locally running Cloudgate dev server (API on http://localhost:44301, client on http://localhost:5173) via the mcp-remote bridge, for development and testing.",
+  "author": {
+    "name": "Cloudgate Dev LLC",
+    "email": "dev@cloudgate.dev"
+  },
+  "keywords": ["cloudgate", "mcp", "workflow", "api-builder", "local", "development"]
+}
