@@ -20,13 +20,15 @@ For the local OAuth flow to complete, your dev server (`appsettings.json` /
 `appsettings.Development.json`) needs:
 
 1. **OpenIddict enabled**, and the `cloudgate-mcp` client seeded with redirect URIs that include
-   the mcp-remote loopback callback:
-   - `http://127.0.0.1:33418/callback`
-   - `http://localhost:33418/callback`
+   the mcp-remote loopback callback (**path must be `/oauth/callback`**, not `/callback`):
+   - `http://127.0.0.1:33418/oauth/callback`
+   - `http://localhost:33418/oauth/callback`
 2. **`App:ClientRootAddress`** pointing at the local client so the login redirect works:
    - `http://localhost:5173/`
 3. Transport security relaxed for local HTTP (already handled in non-Production via
    `DisableTransportSecurityRequirement`).
+4. Scope **`mcp`** allowed for that client (Protected Resource Metadata advertises
+   `scopes_supported: ["mcp"]`, and `mcp-remote` requests it).
 
 > If your dev server runs over **HTTPS** instead of HTTP, change the URL in `.mcp.json` to
 > `https://localhost:44301/mcp/workflow`. With a self-signed dev cert you may also need to start
@@ -39,6 +41,32 @@ For the local OAuth flow to complete, your dev server (`appsettings.json` /
 2. Make sure the local server (`:44301`) and client (`:5173`) are running.
 3. Ask Claude to list your Cloudgate projects → a browser opens to
    `http://localhost:5173` to sign in → approve → the local tools become available.
+
+## Re-auth / troubleshooting
+
+`mcp-remote` stores tokens under `%USERPROFILE%\.mcp-auth`. To force a fresh OAuth login:
+
+```powershell
+# 1) Clear cached tokens / lockfiles
+Remove-Item -Recurse -Force "$env:USERPROFILE\.mcp-auth" -ErrorAction SilentlyContinue
+
+# 2) Manual reauth probe (PowerShell-safe: put client_id JSON in a file)
+Set-Content -Path .\client-info.json -Value '{"client_id":"cloudgate-mcp"}'
+npx -y -p mcp-remote@latest mcp-remote-client `
+  http://localhost:44301/mcp/workflow `
+  33418 `
+  --static-oauth-client-info "@$PWD\client-info.json" `
+  --debug
+```
+
+Do **not** paste `--static-oauth-client-info {"client_id":"..."}` raw in PowerShell — `{...}` is
+parsed as a script block and breaks JSON. Use the `@file` form above, or run from cmd.exe.
+
+Expected authorize `redirect_uri`:
+`http://localhost:33418/oauth/callback`
+
+If the browser errors with an invalid redirect URI, update the seeded OpenIddict client URIs
+to that exact path and restart the API.
 
 ## Notes
 
