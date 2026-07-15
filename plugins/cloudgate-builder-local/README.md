@@ -1,11 +1,10 @@
 # Cloudgate Builder (Local)
 
 A **local development** build of the Cloudgate Builder plugin. It connects Claude to a
-Cloudgate server running on your own machine (exposed via an ngrok tunnel) instead of
-production, so you can build and test workflow-APIs against local code.
+Cloudgate server running on your own machine instead of production, so you can build and test
+workflow-APIs against local code.
 
-- **API / MCP server:** `https://virescent-unmaliciously-ruthie.ngrok-free.dev`  (MCP endpoint: `/mcp/workflow`)
-- **Local origin behind the tunnel:** `http://localhost:44301`
+- **API / MCP server:** `http://localhost:44301`  (MCP endpoint: `/mcp/workflow`)
 - **Client (React) app:** `http://localhost:5173`  (where OAuth sign-in happens)
 - **Transport:** `mcp-remote` (local bridge) — completes OAuth via a loopback listener.
 
@@ -14,8 +13,6 @@ production, so you can build and test workflow-APIs against local code.
 - **Node.js** installed (the bridge runs via `npx mcp-remote`).
 - Your Cloudgate **dev server running** on `http://localhost:44301`.
 - Your Cloudgate **React client running** on `http://localhost:5173`.
-- An **ngrok tunnel** forwarding `https://virescent-unmaliciously-ruthie.ngrok-free.dev`
-  to the local dev server (`http://localhost:44301`).
 
 ## Local server configuration (one-time)
 
@@ -33,10 +30,9 @@ For the local OAuth flow to complete, your dev server (`appsettings.json` /
 4. Scope **`mcp`** allowed for that client (Protected Resource Metadata advertises
    `scopes_supported: ["mcp"]`, and `mcp-remote` requests it).
 
-> The ngrok tunnel terminates TLS with a valid certificate, so `mcp-remote` connects over
-> plain HTTPS with no extra flags. If you point `.mcp.json` at a direct `https://localhost`
-> dev server with a self-signed cert instead, start Claude with `NODE_TLS_REJECT_UNAUTHORIZED=0`
-> so `mcp-remote` accepts the certificate.
+> If your dev server runs over **HTTPS** instead of HTTP, change the URL in `.mcp.json` to
+> `https://localhost:44301/mcp/workflow`. With a self-signed dev cert you may also need to start
+> Claude with `NODE_TLS_REJECT_UNAUTHORIZED=0` so `mcp-remote` accepts the certificate.
 
 ## Install
 
@@ -57,7 +53,7 @@ Remove-Item -Recurse -Force "$env:USERPROFILE\.mcp-auth" -ErrorAction SilentlyCo
 # 2) Manual reauth probe (PowerShell-safe: put client_id JSON in a file)
 Set-Content -Path .\client-info.json -Value '{"client_id":"cloudgate-mcp"}'
 npx -y -p mcp-remote@latest mcp-remote-client `
-  https://virescent-unmaliciously-ruthie.ngrok-free.dev/mcp/workflow `
+  http://localhost:44301/mcp/workflow `
   33418 `
   --static-oauth-client-info "@$PWD\client-info.json" `
   --debug
@@ -74,9 +70,8 @@ to that exact path and restart the API.
 
 ## Notes
 
-- This points at an ngrok tunnel to your dev machine, so it only works while that tunnel and
-  your local server are running — it is **not** for distribution. Use the production plugin /
-  store build for real users.
+- This points at `localhost`, so it only works on the machine running your dev server — it is
+  **not** for distribution. Use the production plugin / store build for real users.
 - The connection is named `cloudgate-local` to avoid clashing with a production Cloudgate
   connector if both are installed. (Both default to loopback port `33418`, so run only one at a
   time, or change the port here and in the seeded redirect URIs.)

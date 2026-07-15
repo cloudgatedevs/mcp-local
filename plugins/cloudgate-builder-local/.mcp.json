@@ -5,7 +5,7 @@
       "args": [
         "-y",
         "mcp-remote",
-        "https://virescent-unmaliciously-ruthie.ngrok-free.dev/mcp/workflow",
+        "http://localhost:44301/mcp/workflow",
         "33418",
         "--static-oauth-client-info",
         "{\"client_id\":\"cloudgate-mcp\"}"
