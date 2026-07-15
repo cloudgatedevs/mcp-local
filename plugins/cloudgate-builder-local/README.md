@@ -1,10 +1,11 @@
 # Cloudgate Builder (Local)
 
 A **local development** build of the Cloudgate Builder plugin. It connects Claude to a
-Cloudgate server running on your own machine instead of production, so you can build and test
-workflow-APIs against local code.
+Cloudgate server running on your own machine (exposed via an ngrok tunnel) instead of
+production, so you can build and test workflow-APIs against local code.
 
-- **API / MCP server:** `http://localhost:44301`  (MCP endpoint: `/mcp/workflow`)
+- **API / MCP server:** `https://virescent-unmaliciously-ruthie.ngrok-free.dev`  (MCP endpoint: `/mcp/workflow`)
+- **Local origin behind the tunnel:** `http://localhost:44301`
 - **Client (React) app:** `http://localhost:5173`  (where OAuth sign-in happens)
 - **Transport:** `mcp-remote` (local bridge) — completes OAuth via a loopback listener.
 
@@ -13,6 +14,8 @@ workflow-APIs against local code.
 - **Node.js** installed (the bridge runs via `npx mcp-remote`).
 - Your Cloudgate **dev server running** on `http://localhost:44301`.
 - Your Cloudgate **React client running** on `http://localhost:5173`.
+- An **ngrok tunnel** forwarding `https://virescent-unmaliciously-ruthie.ngrok-free.dev`
+  to the local dev server (`http://localhost:44301`).
 
 ## Local server configuration (one-time)
 
@@ -30,9 +33,10 @@ For the local OAuth flow to complete, your dev server (`appsettings.json` /
 4. Scope **`mcp`** allowed for that client (Protected Resource Metadata advertises
    `scopes_supported: ["mcp"]`, and `mcp-remote` requests it).
 
-> If your dev server runs over **HTTPS** instead of HTTP, change the URL in `.mcp.json` to
-> `https://localhost:44301/mcp/workflow`. With a self-signed dev cert you may also need to start
-> Claude with `NODE_TLS_REJECT_UNAUTHORIZED=0` so `mcp-remote` accepts the certificate.
+> The ngrok tunnel terminates TLS with a valid certificate, so `mcp-remote` connects over
+> plain HTTPS with no extra flags. If you point `.mcp.json` at a direct `https://localhost`
+> dev server with a self-signed cert instead, start Claude with `NODE_TLS_REJECT_UNAUTHORIZED=0`
+> so `mcp-remote` accepts the certificate.
 
 ## Install
 
