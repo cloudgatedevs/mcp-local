@@ -57,7 +57,7 @@ Remove-Item -Recurse -Force "$env:USERPROFILE\.mcp-auth" -ErrorAction SilentlyCo
 # 2) Manual reauth probe (PowerShell-safe: put client_id JSON in a file)
 Set-Content -Path .\client-info.json -Value '{"client_id":"cloudgate-mcp"}'
 npx -y -p mcp-remote@latest mcp-remote-client `
-  http://localhost:44301/mcp/workflow `
+  https://virescent-unmaliciously-ruthie.ngrok-free.dev/mcp/workflow `
   33418 `
   --static-oauth-client-info "@$PWD\client-info.json" `
   --debug
@@ -74,8 +74,9 @@ to that exact path and restart the API.
 
 ## Notes
 
-- This points at `localhost`, so it only works on the machine running your dev server — it is
-  **not** for distribution. Use the production plugin / store build for real users.
+- This points at an ngrok tunnel to your dev machine, so it only works while that tunnel and
+  your local server are running — it is **not** for distribution. Use the production plugin /
+  store build for real users.
 - The connection is named `cloudgate-local` to avoid clashing with a production Cloudgate
   connector if both are installed. (Both default to loopback port `33418`, so run only one at a
   time, or change the port here and in the seeded redirect URIs.)
