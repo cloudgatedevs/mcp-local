@@ -2,7 +2,7 @@
 name: cloudgate-build
 description: >
   Build or edit a Cloudgate workflow-API ("controller") through the Cloudgate MCP
-  (/mcp, streamable HTTP, Bearer auth). Use when the user asks to create a controller,
+  (/mcp/workflow, streamable HTTP, OAuth/Bearer auth). Use when the user asks to create a controller,
   add an action, wire workflow nodes, clone a cookbook recipe, or publish
   a Cloudgate API. Mirrors the backend CORE_SYSTEM_PRIMER.
 ---
@@ -25,8 +25,8 @@ use the legacy names internally (e.g. `list_projects`, `create_endpoint`, `proje
 - Tools surface as `mcp__cloudgate-local__*` (workflow) once connected — this local
   plugin names its MCP server `cloudgate-local` in `.mcp.json` to avoid clashing with a
   production `cloudgate` connector. SQLite database tools are on **both** `/mcp/workflow`
-  and `/mcp/data`. (Data Tables, if a separate data server is configured, would surface
-  under that server's own prefix.)
+  and `/mcp/data`; this plugin connects `/mcp/workflow` only. The legacy Data Tables
+  feature was retired (replaced by Worksheets) — there are no data-table MCP tools.
 
 ## Mandatory rules (from the primer — do not skip)
 - ALWAYS use live MCP tools for workflow work; NEVER guess graph JSON.
@@ -68,9 +68,6 @@ Cloudgate stores controller databases as SQLite files. Workflow **Database nodes
 
 **Shortcut:** `import_platform_template(project_id, "database_crud.json", dry_run)` clones a
 full CRUD API with database + nodes already wired.
-
-**Data Tables** (tenant UI at /home/data-tables) are a different feature — use the
-`cloudgate-data` MCP server (`list_data_tables`, `query_data_table`, etc.).
 
 ## Domain references (load lazily, only when needed)
 get_database_model, get_selector_model, get_metrics_model, get_documentation_model,
