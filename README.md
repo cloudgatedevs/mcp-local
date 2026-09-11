@@ -1,18 +1,11 @@
-# Cloudgate — Local Dev Plugin
+# Cloudgate Local Development Plugin
 
-Local development marketplace for the **Cloudgate Builder (Local)** plugin. It connects Claude
-to a Cloudgate server running on `http://localhost:44301` (client on `http://localhost:5173`)
-via the `mcp-remote` bridge, for building and testing workflow-APIs against local code.
+Connects a desktop MCP client directly to `http://localhost:44301/mcp/workflow` using
+native streamable HTTP and OAuth. Includes the `cloudgate-build` skill.
 
-```
-.claude-plugin/marketplace.json                 # marketplace manifest (root)
-plugins/cloudgate-builder-local/
-  .claude-plugin/plugin.json                    # plugin manifest
-  .mcp.json                                     # mcp-remote -> http://localhost:44301/mcp/workflow
-  README.md                                     # local setup instructions
-  skills/cloudgate-build/SKILL.md               # the cloudgate-build skill
-```
+Install `cloudgate-builder-local` from this marketplace and start a new conversation.
+See `plugins/cloudgate-builder-local/README.md` for the local OAuth prerequisites.
 
-See the plugin README for the local server/client configuration required for OAuth.
-
-© Cloudgate Dev LLC
+The plugin does not use Node.js, `mcp-remote`, or a shared fixed callback port.
+Localhost must be reachable from the machine running the MCP client; a cloud-hosted
+client cannot reach your computer's loopback address.
